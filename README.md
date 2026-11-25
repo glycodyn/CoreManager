@@ -1,12 +1,5 @@
-NVIDIA Driver Upgrade W/O changing anything else! 
-# ccbrc cluster: NVIDIA driver upgrade and CUDA 13 toolkit module
+# NVIDIA Driver Upgrade W/O updating anything else! 
 
-This procedure upgrades the NVIDIA driver on one compute node at a time, from
-550.76 to 595.104.02, and then adds CUDA Toolkit 13.5.0 as a new environment
-module beside the existing CUDA versions. The kernel, the OS, ZFS and all
-existing software are left untouched.
-
-Versions were checked against NVIDIA's site on 25 November 2026.
 
 ## Current Versions
 
@@ -31,7 +24,7 @@ Versions were checked against NVIDIA's site on 25 November 2026.
 | Kernel, OS, ZFS | Rocky 9.3, 5.14.0-362.24.1 | unchanged | The driver needs kernel 4.15+ and glibc 2.27+, which are met. |
 
 
-## What NOT to do
+## What we must not do
 
 1. **Do not run `dnf update` and do not change the kernel.** ZFS on `ccbrc` is
    built by DKMS for kernel 5.14.0-362.24.1, and the NVIDIA module is built for
@@ -43,7 +36,7 @@ Versions were checked against NVIDIA's site on 25 November 2026.
 4. **Use the `.run` driver installer only.** That is how 550.76 was installed.
    Do not mix it with NVIDIA's RPM driver packages.
 
-## Step 0: Pre-checks on the node
+## Step 0: Pre-checks on the node (Mannose for trial!)
 
 Run as root on the node to be upgraded.
 
