@@ -1,0 +1,2 @@
+# CoreManager
+Manage the hardware!
