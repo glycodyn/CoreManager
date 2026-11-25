@@ -80,11 +80,8 @@ wget https://download.nvidia.com/XFree86/Linux-x86_64/595.104.02/NVIDIA-Linux-x8
 # Current driver, kept for rollback if we may need it later 
 wget https://download.nvidia.com/XFree86/Linux-x86_64/550.76/NVIDIA-Linux-x86_64-550.76.run
 
-# Get CUDA toolkit
-For the CUDA toolkit, open <https://developer.nvidia.com/cuda-downloads>,
-choose Linux, x86_64, Rocky, 9, **runfile (local)**, and copy the `wget`
-command the page shows. The page builds the file name in the browser, so this
-document writes it as `cuda_13.5.0_<...>_linux.run`.
+# Get CUDA toolkit (not needed as of now)
+wget https://developer.download.nvidia.com/compute/cuda/13.5.0/local_installers/cuda_13.5.0_linux.run
 
 ## Step 2: Drain the node
 
