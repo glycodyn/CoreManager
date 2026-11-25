@@ -304,29 +304,6 @@ nvcc hello.cu -o hello && ./hello
 The `cuda/13.5.0` module appears on every node because `/software` is shared,
 but programs built with it run only on nodes that already have the new driver.
 
-## The other nodes
-
-Upgrading the remaining nodes is optional. Each node's driver is independent,
-so a cluster with some nodes on 595 and some on 550.76 runs all existing
-software normally.
-
-In a mixed cluster, jobs that need CUDA 13 must be sent to an upgraded node by
-name:
-
-```bash
-#SBATCH --nodelist=mannose
-```
-
-On a node still on 550.76 such a job fails at start with a driver-version
-error and damages nothing.
-
-To upgrade another node, repeat Steps 0 and 2 to 5 with its name in `NODE=`,
-one node at a time. Steps 1, 6 and 7 are done only once.
-
-Suggested order: `mannose` first as the test node, then the RTX 6000 Ada node,
-which is the GPU RFD4-Proteina has been tested on and the one with the most
-memory.
-
 ## Rollback
 
 A node returns to its starting state by reinstalling the old driver. Run as
@@ -338,37 +315,3 @@ systemctl stop nvidia-persistenced 2>/dev/null
 sh /software/installers/NVIDIA-Linux-x86_64-550.76.run
 reboot
 ```
-
-Answer the prompts as in Step 3. The 550.76 installer uses the proprietary
-modules by default, so it needs no extra flag. After the reboot `nvidia-smi`
-should read `Driver Version: 550.76`; then resume the node as in Step 5.
-
-To remove the new toolkit, delete the `cuda/13.5.0` module file and the
-`/software/apps/cuda/13.5.0` folder. Nothing else refers to them.
-
-## Why no kernel or GCC update
-
-NVIDIA's CUDA 13 installation guide lists Rocky 9 with kernel 5.14.0-570.12.1
-and gcc 11.5.0. That table is the configuration NVIDIA qualified for the CUDA
-Toolkit release, not a set of minimums:
-
-| Item | What depends on it | Status here |
-| --- | --- | --- |
-| Kernel | Only the driver's kernel module, which is built for the running kernel using the matching `kernel-devel` package. The driver README asks for kernel 4.15 or newer. | 5.14 with matching `kernel-devel` installed |
-| GCC | Compiling CUDA code and building the driver module. NVIDIA's guide states gcc "is not required for running CUDA applications". | 11.4.1, the compiler the running kernel was built with; Step 7 tests it with `nvcc` |
-| glibc | All user-space CUDA and driver libraries. | 2.34, an exact match |
-
-Staying on the current kernel and gcc means the setup is not one NVIDIA
-officially supports for the toolkit. The procedure therefore proves it on one
-node, with a rollback ready. A kernel update is in practice a Rocky 9.3 to
-9.x upgrade and would require rebuilding ZFS; it should be planned and tested
-as a separate project.
-
-## Open items
-
-- [ ] Confirm `/usr/bin/nvidia-uninstall` exists on `mannose` (Step 3.1).
-- [ ] Record which of `glyco1` and `glyco2` has the RTX 6000 Ada.
-- [ ] Confirm the option names of the CUDA 13.5.0 runfile if the silent
-      install is used (Step 6.2).
-- [ ] RFD4-Proteina is untested by its developers on the RTX 3080, RTX A5000
-      and RTX 2080; try it on those nodes before relying on them.
